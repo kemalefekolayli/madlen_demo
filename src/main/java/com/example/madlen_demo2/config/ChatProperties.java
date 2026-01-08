@@ -1,4 +1,4 @@
-package com.madlen.chat.config;
+package com.example.madlen_demo2.config;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;

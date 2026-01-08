@@ -1,4 +1,4 @@
-package com.madlen.chat.config;
+package com.example.madlen_demo2.config;
 
 import com.madlen.chat.model.AIModel;
 import lombok.Data;

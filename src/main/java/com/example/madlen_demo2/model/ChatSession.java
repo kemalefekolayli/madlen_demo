@@ -1,4 +1,4 @@
-package com.madlen.chat.model;
+package com.example.madlen_demo2.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

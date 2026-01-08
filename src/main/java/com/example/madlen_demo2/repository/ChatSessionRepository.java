@@ -1,4 +1,4 @@
-package com.madlen.chat.repository;
+package com.example.madlen_demo2.repository;
 
 import com.madlen.chat.model.ChatSession;
 import org.springframework.data.mongodb.repository.MongoRepository;

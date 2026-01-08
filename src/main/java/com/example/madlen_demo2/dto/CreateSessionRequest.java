@@ -1,4 +1,4 @@
-package com.madlen.chat.dto;
+package com.example.madlen_demo2.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;

@@ -1,4 +1,4 @@
-package com.madlen.chat.config;
+package com.example.madlen_demo2.config;
 
 import io.micrometer.observation.ObservationRegistry;
 import io.micrometer.observation.aop.ObservedAspect;

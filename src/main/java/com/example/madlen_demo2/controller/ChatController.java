@@ -1,4 +1,4 @@
-package com.madlen.chat.controller;
+package com.example.madlen_demo2.controller;
 
 import com.madlen.chat.dto.*;
 import com.madlen.chat.model.AIModel;

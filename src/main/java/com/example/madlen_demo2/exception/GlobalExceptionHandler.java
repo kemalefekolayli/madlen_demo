@@ -1,4 +1,4 @@
-package com.madlen.chat.exception;
+package com.example.madlen_demo2.exception;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

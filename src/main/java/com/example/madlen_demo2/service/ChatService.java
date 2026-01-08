@@ -1,4 +1,4 @@
-package com.madlen.chat.service;
+package com.example.madlen_demo2.service;
 
 import com.madlen.chat.config.ChatProperties;
 import com.madlen.chat.dto.*;

@@ -1,4 +1,4 @@
-package com.madlen.chat.dto;
+package com.example.madlen_demo2.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
