@@ -1,0 +1,67 @@
+spring:
+  application:
+    name: madlen-chat
+
+  data:
+    mongodb:
+      uri: ${MONGODB_URI:mongodb://localhost:27017/madlen-chat}
+      database: madlen-chat
+
+  jackson:
+    serialization:
+      write-dates-as-timestamps: false
+    default-property-inclusion: non_null
+
+server:
+  port: 8080
+
+openrouter:
+  api:
+    base-url: https://openrouter.ai/api/v1
+    key: ${OPENROUTER_API_KEY:}
+
+free-models:
+  - id: google/gemini-2.0-flash-exp:free
+    name: Gemini 2.0 Flash
+    description: Google's fast and capable model
+
+  - id: meta-llama/llama-3.2-3b-instruct:free
+    name: Llama 3.2 3B
+    description: Meta's efficient instruction-tuned model
+
+  - id: qwen/qwen-2-7b-instruct:free
+    name: Qwen 2 7B
+    description: Alibaba's multilingual model
+
+  - id: microsoft/phi-3-mini-128k-instruct:free
+    name: Phi-3 Mini
+    description: Microsoft's compact but powerful model
+
+  - id: huggingfaceh4/zephyr-7b-beta:free
+    name: Zephyr 7B
+    description: HuggingFace's helpful assistant model
+
+chat:
+  session:
+    max-per-user: 10
+    max-messages-per-session: 100
+
+management:
+  tracing:
+    sampling:
+      probability: 1.0
+  otlp:
+    tracing:
+      endpoint: ${OTEL_EXPORTER_OTLP_ENDPOINT:http://localhost:4318/v1/traces}
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus,metrics
+
+logging:
+  level:
+    root: INFO
+    com.madlen.chat: DEBUG
+    io.opentelemetry: INFO
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} [%X{traceId:-}] %-5level %logger{36} - %msg%n"

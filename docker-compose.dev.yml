@@ -1,0 +1,35 @@
+# Development docker-compose - runs only infrastructure services
+# Use this when developing locally and running the backend from IDE
+
+version: '3.8'
+
+services:
+  # MongoDB for chat history storage
+  mongodb:
+    image: mongo:7.0
+    container_name: madlen-mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+    environment:
+      - MONGO_INITDB_DATABASE=madlen-chat
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Jaeger for distributed tracing
+  jaeger:
+    image: jaegertracing/all-in-one:1.53
+    container_name: madlen-jaeger
+    ports:
+      - "16686:16686"  # Jaeger UI
+      - "4317:4317"    # OTLP gRPC
+      - "4318:4318"    # OTLP HTTP
+    environment:
+      - COLLECTOR_OTLP_ENABLED=true
+
+volumes:
+  mongodb_data:

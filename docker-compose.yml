@@ -1,0 +1,66 @@
+version: '3.8'
+
+services:
+  # MongoDB for chat history storage
+  mongodb:
+    image: mongo:7.0
+    container_name: madlen-mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+    environment:
+      - MONGO_INITDB_DATABASE=madlen-chat
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - madlen-network
+
+  # Jaeger for distributed tracing
+  jaeger:
+    image: jaegertracing/all-in-one:1.53
+    container_name: madlen-jaeger
+    ports:
+      - "16686:16686"  # Jaeger UI
+      - "4317:4317"    # OTLP gRPC
+      - "4318:4318"    # OTLP HTTP
+    environment:
+      - COLLECTOR_OTLP_ENABLED=true
+    networks:
+      - madlen-network
+
+  # Spring Boot Backend Application
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: madlen-backend
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_DATA_MONGODB_URI=mongodb://mongodb:27017/madlen-chat
+      - OPENROUTER_API_KEY=${OPENROUTER_API_KEY}
+      - MANAGEMENT_OTLP_TRACING_ENDPOINT=http://jaeger:4318/v1/traces
+    depends_on:
+      mongodb:
+        condition: service_healthy
+      jaeger:
+        condition: service_started
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:8080/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - madlen-network
+
+volumes:
+  mongodb_data:
+
+networks:
+  madlen-network:
+    driver: bridge
