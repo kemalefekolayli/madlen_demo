@@ -1,0 +1,103 @@
+package com.madlen.chat.dto;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.util.List;
+
+public class OpenRouterDtos {
+    
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class ChatCompletionRequest {
+        private String model;
+        private List<Message> messages;
+        private boolean stream;
+        
+        @JsonProperty("max_tokens")
+        private Integer maxTokens;
+        
+        private Double temperature;
+    }
+    
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class Message {
+        private String role;
+        private String content;
+    }
+    
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class ChatCompletionResponse {
+        private String id;
+        private String object;
+        private long created;
+        private String model;
+        private List<Choice> choices;
+        private Usage usage;
+    }
+    
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class Choice {
+        private int index;
+        private Message message;
+        
+        @JsonProperty("finish_reason")
+        private String finishReason;
+        
+        // For streaming
+        private Message delta;
+    }
+    
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class Usage {
+        @JsonProperty("prompt_tokens")
+        private int promptTokens;
+        
+        @JsonProperty("completion_tokens")
+        private int completionTokens;
+        
+        @JsonProperty("total_tokens")
+        private int totalTokens;
+    }
+    
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class StreamChunk {
+        private String id;
+        private String object;
+        private long created;
+        private String model;
+        private List<Choice> choices;
+    }
+    
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class ErrorResponse {
+        private Error error;
+    }
+    
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class Error {
+        private String message;
+        private String type;
+        private String code;
+    }
+}
