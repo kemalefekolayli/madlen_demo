@@ -1,5 +1,6 @@
 package com.example.madlen_demo2.dto;
-import com.madlen.chat.model.ChatMessage;
+
+import com.example.madlen_demo2.model.ChatMessage;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

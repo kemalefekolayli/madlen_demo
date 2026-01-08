@@ -1,10 +1,12 @@
 package com.example.madlen_demo2.service;
 
-import com.madlen.chat.config.OpenRouterProperties;
-import com.madlen.chat.dto.OpenRouterDtos.*;
-import com.madlen.chat.exception.ChatExceptions;
-import com.madlen.chat.model.AIModel;
-import com.madlen.chat.model.ChatMessage;
+
+
+import com.example.madlen_demo2.config.OpenRouterProperties;
+import com.example.madlen_demo2.exception.ChatExceptions;
+import com.example.madlen_demo2.model.AIModel;
+import com.example.madlen_demo2.model.ChatMessage;
+import com.example.madlen_demo2.dto.OpenRouterDtos.*;
 import io.micrometer.observation.annotation.Observed;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,7 +16,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 
 import java.time.Duration;
 import java.util.List;

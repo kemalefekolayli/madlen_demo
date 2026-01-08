@@ -1,8 +1,12 @@
 package com.example.madlen_demo2.controller;
 
-import com.madlen.chat.dto.*;
-import com.madlen.chat.model.AIModel;
-import com.madlen.chat.service.ChatService;
+
+import com.example.madlen_demo2.dto.ChatRequest;
+import com.example.madlen_demo2.dto.ChatResponse;
+import com.example.madlen_demo2.dto.CreateSessionRequest;
+import com.example.madlen_demo2.dto.SessionResponse;
+import com.example.madlen_demo2.model.AIModel;
+import com.example.madlen_demo2.service.ChatService;
 import io.micrometer.observation.annotation.Observed;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

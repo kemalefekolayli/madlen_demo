@@ -1,6 +1,7 @@
 package com.example.madlen_demo2.repository;
 
-import com.madlen.chat.model.ChatSession;
+
+import com.example.madlen_demo2.model.ChatSession;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 

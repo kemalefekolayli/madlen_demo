@@ -1,12 +1,16 @@
 package com.example.madlen_demo2.service;
 
-import com.madlen.chat.config.ChatProperties;
-import com.madlen.chat.dto.*;
-import com.madlen.chat.exception.ChatExceptions;
-import com.madlen.chat.model.AIModel;
-import com.madlen.chat.model.ChatMessage;
-import com.madlen.chat.model.ChatSession;
-import com.madlen.chat.repository.ChatSessionRepository;
+
+import com.example.madlen_demo2.config.ChatProperties;
+import com.example.madlen_demo2.dto.ChatRequest;
+import com.example.madlen_demo2.dto.ChatResponse;
+import com.example.madlen_demo2.dto.CreateSessionRequest;
+import com.example.madlen_demo2.dto.SessionResponse;
+import com.example.madlen_demo2.exception.ChatExceptions;
+import com.example.madlen_demo2.model.AIModel;
+import com.example.madlen_demo2.model.ChatMessage;
+import com.example.madlen_demo2.model.ChatSession;
+import com.example.madlen_demo2.repository.ChatSessionRepository;
 import io.micrometer.observation.annotation.Observed;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
