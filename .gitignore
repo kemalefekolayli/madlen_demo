@@ -25,6 +25,7 @@ build/
 logs/
 
 # Environment files
+.env.example
 .env
 .env.local
 .env.*.local

@@ -139,7 +139,8 @@ public class ChatService {
                 session.getMessages().subList(0, session.getMessages().size() - 1), // Exclude the just-added user message
                 request.getMessage()
         );
-        
+        assistantMessage.setModel(model); // <--- ADD THIS LINE
+
         // Add assistant response to history
         session.addMessage(assistantMessage);
         
@@ -209,6 +210,7 @@ public class ChatService {
                 ChatMessage assistantMessage = ChatMessage.builder()
                         .role("assistant")
                         .content(fullResponse.toString())
+                        .model(model)
                         .build();
                 currentSession.addMessage(assistantMessage);
                 sessionRepository.save(currentSession);
