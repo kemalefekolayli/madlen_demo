@@ -18,7 +18,7 @@ import java.util.Map;
 @Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
-    
+
     @Data
     @Builder
     @AllArgsConstructor
@@ -29,43 +29,61 @@ public class GlobalExceptionHandler {
         private String message;
         private Map<String, String> details;
     }
-    
+
     @ExceptionHandler(ChatExceptions.SessionNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleSessionNotFound(ChatExceptions.SessionNotFoundException ex) {
         log.warn("Session not found: {}", ex.getMessage());
         return buildResponse(HttpStatus.NOT_FOUND, ex.getMessage());
     }
-    
+
     @ExceptionHandler(ChatExceptions.SessionLimitExceededException.class)
     public ResponseEntity<ErrorResponse> handleSessionLimit(ChatExceptions.SessionLimitExceededException ex) {
         log.warn("Session limit exceeded: {}", ex.getMessage());
         return buildResponse(HttpStatus.BAD_REQUEST, ex.getMessage());
     }
-    
+
     @ExceptionHandler(ChatExceptions.MessageLimitExceededException.class)
     public ResponseEntity<ErrorResponse> handleMessageLimit(ChatExceptions.MessageLimitExceededException ex) {
         log.warn("Message limit exceeded: {}", ex.getMessage());
         return buildResponse(HttpStatus.BAD_REQUEST, ex.getMessage());
     }
-    
+
     @ExceptionHandler(ChatExceptions.InvalidModelException.class)
     public ResponseEntity<ErrorResponse> handleInvalidModel(ChatExceptions.InvalidModelException ex) {
         log.warn("Invalid model: {}", ex.getMessage());
         return buildResponse(HttpStatus.BAD_REQUEST, ex.getMessage());
     }
-    
+
     @ExceptionHandler(ChatExceptions.OpenRouterException.class)
     public ResponseEntity<ErrorResponse> handleOpenRouterError(ChatExceptions.OpenRouterException ex) {
         log.error("OpenRouter API error: {}", ex.getMessage());
         return buildResponse(HttpStatus.SERVICE_UNAVAILABLE, ex.getMessage());
     }
-    
+
     @ExceptionHandler(ChatExceptions.ApiKeyNotConfiguredException.class)
     public ResponseEntity<ErrorResponse> handleApiKeyNotConfigured(ChatExceptions.ApiKeyNotConfiguredException ex) {
         log.error("API key not configured");
         return buildResponse(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage());
     }
-    
+
+    @ExceptionHandler(ChatExceptions.VisionNotSupportedException.class)
+    public ResponseEntity<ErrorResponse> handleVisionNotSupported(ChatExceptions.VisionNotSupportedException ex) {
+        log.warn("Vision not supported: {}", ex.getMessage());
+        return buildResponse(HttpStatus.BAD_REQUEST, ex.getMessage());
+    }
+
+    @ExceptionHandler(ChatExceptions.InvalidImageException.class)
+    public ResponseEntity<ErrorResponse> handleInvalidImage(ChatExceptions.InvalidImageException ex) {
+        log.warn("Invalid image: {}", ex.getMessage());
+        return buildResponse(HttpStatus.BAD_REQUEST, ex.getMessage());
+    }
+
+    @ExceptionHandler(ChatExceptions.ImageTooLargeException.class)
+    public ResponseEntity<ErrorResponse> handleImageTooLarge(ChatExceptions.ImageTooLargeException ex) {
+        log.warn("Image too large: {}", ex.getMessage());
+        return buildResponse(HttpStatus.PAYLOAD_TOO_LARGE, ex.getMessage());
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse> handleValidationErrors(MethodArgumentNotValidException ex) {
         Map<String, String> errors = new HashMap<>();
@@ -74,9 +92,9 @@ public class GlobalExceptionHandler {
             String errorMessage = error.getDefaultMessage();
             errors.put(fieldName, errorMessage);
         });
-        
+
         log.warn("Validation failed: {}", errors);
-        
+
         ErrorResponse response = ErrorResponse.builder()
                 .timestamp(Instant.now())
                 .status(HttpStatus.BAD_REQUEST.value())
@@ -84,17 +102,17 @@ public class GlobalExceptionHandler {
                 .message("Validation failed")
                 .details(errors)
                 .build();
-        
+
         return ResponseEntity.badRequest().body(response);
     }
-    
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleGenericException(Exception ex) {
         log.error("Unexpected error occurred", ex);
-        return buildResponse(HttpStatus.INTERNAL_SERVER_ERROR, 
+        return buildResponse(HttpStatus.INTERNAL_SERVER_ERROR,
                 "An unexpected error occurred. Please try again later.");
     }
-    
+
     private ResponseEntity<ErrorResponse> buildResponse(HttpStatus status, String message) {
         ErrorResponse response = ErrorResponse.builder()
                 .timestamp(Instant.now())
@@ -102,7 +120,7 @@ public class GlobalExceptionHandler {
                 .error(status.getReasonPhrase())
                 .message(message)
                 .build();
-        
+
         return ResponseEntity.status(status).body(response);
     }
 }

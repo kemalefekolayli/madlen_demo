@@ -12,6 +12,12 @@ spring:
       write-dates-as-timestamps: false
     default-property-inclusion: non_null
 
+  # Increase max request size for image uploads
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 15MB
+
 server:
   port: 8080
 
@@ -21,25 +27,42 @@ openrouter:
     key: ${OPENROUTER_API_KEY:}
 
   free-models:
-  - id: google/gemini-2.0-flash-exp:free
-    name: Gemini 2.0 Flash
-    description: Google's fast and capable model
+    # Vision-capable models (free tier)
+    - id: google/gemini-2.0-flash-exp:free
+      name: Gemini 2.0 Flash
+      description: Google's fast and capable model with vision support
+      supports-vision: true
 
-  - id: meta-llama/llama-3.2-3b-instruct:free
-    name: Llama 3.2 3B
-    description: Meta's efficient instruction-tuned model
+    - id: google/gemini-exp-1206:free
+      name: Gemini Experimental
+      description: Google's experimental model with advanced vision capabilities
+      supports-vision: true
 
-  - id: qwen/qwen-2-7b-instruct:free
-    name: Qwen 2 7B
-    description: Alibaba's multilingual model
+    - id: meta-llama/llama-3.2-11b-vision-instruct:free
+      name: Llama 3.2 11B Vision
+      description: Meta's vision-language model for image understanding
+      supports-vision: true
 
-  - id: microsoft/phi-3-mini-128k-instruct:free
-    name: Phi-3 Mini
-    description: Microsoft's compact but powerful model
+    # Text-only models (free tier)
+    - id: meta-llama/llama-3.2-3b-instruct:free
+      name: Llama 3.2 3B
+      description: Meta's efficient instruction-tuned model (text only)
+      supports-vision: false
 
-  - id: huggingfaceh4/zephyr-7b-beta:free
-    name: Zephyr 7B
-    description: HuggingFace's helpful assistant model
+    - id: qwen/qwen-2-7b-instruct:free
+      name: Qwen 2 7B
+      description: Alibaba's multilingual model (text only)
+      supports-vision: false
+
+    - id: microsoft/phi-3-mini-128k-instruct:free
+      name: Phi-3 Mini
+      description: Microsoft's compact but powerful model (text only)
+      supports-vision: false
+
+    - id: huggingfaceh4/zephyr-7b-beta:free
+      name: Zephyr 7B
+      description: HuggingFace's helpful assistant model (text only)
+      supports-vision: false
 
 chat:
   session:
@@ -62,6 +85,7 @@ logging:
   level:
     root: INFO
     com.madlen.chat: DEBUG
+    com.example.madlen_demo2: DEBUG
     io.opentelemetry: INFO
   pattern:
     console: "%d{yyyy-MM-dd HH:mm:ss} [%X{traceId:-}] %-5level %logger{36} - %msg%n"
