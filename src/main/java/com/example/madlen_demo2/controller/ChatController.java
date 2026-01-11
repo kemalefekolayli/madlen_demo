@@ -1,6 +1,5 @@
 package com.example.madlen_demo2.controller;
 
-
 import com.example.madlen_demo2.dto.ChatRequest;
 import com.example.madlen_demo2.dto.ChatResponse;
 import com.example.madlen_demo2.dto.CreateSessionRequest;
@@ -25,11 +24,11 @@ import java.util.Map;
 @RequestMapping("/api")
 @RequiredArgsConstructor
 public class ChatController {
-    
+
     private final ChatService chatService;
-    
+
     // ==================== Model Endpoints ====================
-    
+
     /**
      * Get all available AI models
      * GET /api/models
@@ -40,9 +39,35 @@ public class ChatController {
         log.debug("GET /api/models");
         return ResponseEntity.ok(chatService.getAvailableModels());
     }
-    
+
+    /**
+     * Get only vision-capable AI models
+     * GET /api/models/vision
+     */
+    @GetMapping("/models/vision")
+    @Observed(name = "api.get-vision-models")
+    public ResponseEntity<List<AIModel>> getVisionModels() {
+        log.debug("GET /api/models/vision");
+        return ResponseEntity.ok(chatService.getVisionCapableModels());
+    }
+
+    /**
+     * Check if a specific model supports vision
+     * GET /api/models/{modelId}/supports-vision
+     */
+    @GetMapping("/models/{modelId}/supports-vision")
+    @Observed(name = "api.check-vision-support")
+    public ResponseEntity<Map<String, Object>> checkVisionSupport(@PathVariable String modelId) {
+        log.debug("GET /api/models/{}/supports-vision", modelId);
+        boolean supportsVision = chatService.modelSupportsVision(modelId);
+        return ResponseEntity.ok(Map.of(
+                "modelId", modelId,
+                "supportsVision", supportsVision
+        ));
+    }
+
     // ==================== Session Endpoints ====================
-    
+
     /**
      * Create a new chat session
      * POST /api/sessions
@@ -54,7 +79,7 @@ public class ChatController {
         SessionResponse session = chatService.createSession(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(session);
     }
-    
+
     /**
      * Get all sessions for a user
      * GET /api/sessions?userId={userId}
@@ -65,7 +90,7 @@ public class ChatController {
         log.debug("GET /api/sessions - userId: {}", userId);
         return ResponseEntity.ok(chatService.getUserSessions(userId));
     }
-    
+
     /**
      * Get a specific session with message history
      * GET /api/sessions/{sessionId}
@@ -76,7 +101,7 @@ public class ChatController {
         log.debug("GET /api/sessions/{}", sessionId);
         return ResponseEntity.ok(chatService.getSession(sessionId));
     }
-    
+
     /**
      * Delete a session
      * DELETE /api/sessions/{sessionId}?userId={userId}
@@ -90,7 +115,7 @@ public class ChatController {
         chatService.deleteSession(sessionId, userId);
         return ResponseEntity.noContent().build();
     }
-    
+
     /**
      * Update session model
      * PATCH /api/sessions/{sessionId}/model
@@ -104,32 +129,49 @@ public class ChatController {
         String newModel = body.get("model");
         return ResponseEntity.ok(chatService.updateSessionModel(sessionId, newModel));
     }
-    
+
     // ==================== Chat Endpoints ====================
-    
+
     /**
      * Send a message and get response (non-streaming)
+     * Supports multi-modal messages with images
      * POST /api/chat
+     *
+     * Request body example with images:
+     * {
+     *   "sessionId": "...",
+     *   "message": "What's in this image?",
+     *   "images": [
+     *     {
+     *       "type": "base64",
+     *       "data": "base64_encoded_image_data",
+     *       "mediaType": "image/jpeg"
+     *     }
+     *   ]
+     * }
      */
     @PostMapping("/chat")
     @Observed(name = "api.chat")
     public ResponseEntity<ChatResponse> sendMessage(@Valid @RequestBody ChatRequest request) {
-        log.debug("POST /api/chat - sessionId: {}", request.getSessionId());
+        log.debug("POST /api/chat - sessionId: {}, hasImages: {}",
+                request.getSessionId(), request.hasImages());
         return ResponseEntity.ok(chatService.sendMessage(request));
     }
-    
+
     /**
      * Send a message and stream the response
+     * Supports multi-modal messages with images
      * POST /api/chat/stream
      * Returns Server-Sent Events
      */
     @PostMapping(value = "/chat/stream", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     @Observed(name = "api.chat-stream")
     public Flux<String> sendMessageStream(@Valid @RequestBody ChatRequest request) {
-        log.debug("POST /api/chat/stream - sessionId: {}", request.getSessionId());
+        log.debug("POST /api/chat/stream - sessionId: {}, hasImages: {}",
+                request.getSessionId(), request.hasImages());
         return chatService.sendMessageStream(request);
     }
-    
+
     /**
      * Get message history for a session (alias for getSession)
      * GET /api/history/{sessionId}
@@ -140,9 +182,9 @@ public class ChatController {
         log.debug("GET /api/history/{}", sessionId);
         return ResponseEntity.ok(chatService.getSession(sessionId));
     }
-    
+
     // ==================== Health Check ====================
-    
+
     /**
      * Simple health check endpoint
      * GET /api/health
@@ -151,7 +193,8 @@ public class ChatController {
     public ResponseEntity<Map<String, String>> health() {
         return ResponseEntity.ok(Map.of(
                 "status", "UP",
-                "service", "madlen-chat"
+                "service", "madlen-chat",
+                "features", "multi-modal-vision"
         ));
     }
 }
